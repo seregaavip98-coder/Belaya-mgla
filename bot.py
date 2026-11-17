@@ -95,7 +95,7 @@ def resources_text(p):
 async def show_home(message: Message, player):
     player = await refresh_player(player)
     await message.answer(
-        f"❄️ <b>ПОСЛЕДНИЙ ОЧАГ</b>\n"
+        f"❄️ <b>БЕЛАЯ МГЛА: ВЫЖИВАНИЕ</b>\n"
         f"Добро пожаловать, {player['name']}!\n\n"
         f"🏰 Поселение №{player['user_id'] % 100000:05d}\n"
         f"🔥 Центральная печь: уровень {player['furnace_level']}\n"
@@ -114,7 +114,7 @@ async def start(message: Message):
 @dp.message(Command("help"))
 async def help_cmd(message: Message):
     await message.answer(
-        "❄️ <b>ПОСЛЕДНИЙ ОЧАГ — помощь</b>\n"
+        "❄️ <b>БЕЛАЯ МГЛА: ВЫЖИВАНИЕ — помощь</b>\n"
         "/start — открыть игру\n"
         "/base — показать базу\n"
         "/resources — показать ресурсы\n\n"
@@ -147,7 +147,7 @@ async def cb_base(call: CallbackQuery):
         p = await get_player(call.from_user.id)
     p = await refresh_player(p)
     await call.message.edit_text(
-        f"❄️ <b>ПОСЛЕДНИЙ ОЧАГ</b>\n🏰 Поселение №{p['user_id'] % 100000:05d}\n"
+        f"❄️ <b>БЕЛАЯ МГЛА: ВЫЖИВАНИЕ</b>\n🏰 Поселение №{p['user_id'] % 100000:05d}\n"
         f"🔥 Центральная печь: уровень {p['furnace_level']}\n🌡 Температура: −35°C\n\n{resources_text(p)}",
         parse_mode="HTML", reply_markup=main_keyboard()
     )
