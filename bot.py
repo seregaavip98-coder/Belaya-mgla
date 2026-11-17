@@ -3,6 +3,7 @@ import os
 import time
 import html
 import random
+import sqlite3
 import aiosqlite
 from aiogram import Bot, Dispatcher, F
 from aiogram.filters import CommandStart, Command
@@ -12,7 +13,32 @@ from dotenv import load_dotenv
 
 load_dotenv()
 TOKEN = os.getenv("BOT_TOKEN")
-DB_PATH = os.getenv("DB_PATH", "game.db")
+
+DATA_DIR = os.getenv("DATA_DIR", "/app/data")
+os.makedirs(DATA_DIR, exist_ok=True)
+
+_db_setting = os.getenv("DB_PATH", "game.db")
+DB_PATH = (
+    _db_setting
+    if os.path.isabs(_db_setting)
+    else os.path.join(DATA_DIR, os.path.basename(_db_setting))
+)
+os.makedirs(os.path.dirname(DB_PATH) or ".", exist_ok=True)
+# Перенос старой базы в постоянное хранилище Bothost
+LEGACY_DB_PATH = "/app/game.db"
+
+if (
+    os.path.abspath(LEGACY_DB_PATH) != os.path.abspath(DB_PATH)
+    and os.path.isfile(LEGACY_DB_PATH)
+    and not os.path.exists(DB_PATH)
+):
+    print("Переносим старую базу данных...")
+
+    with sqlite3.connect(LEGACY_DB_PATH) as old_db:
+        with sqlite3.connect(DB_PATH) as new_db:
+            old_db.backup(new_db)
+
+    print("Старая база успешно перенесена!")
 if not TOKEN:
     raise RuntimeError("Укажите BOT_TOKEN в переменных окружения Bothost")
 
